@@ -255,7 +255,7 @@ function icon(name){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" str
 
 /* ============================= App-URL, version & QR ============================= */
 const APP_URL = "https://elliot851.github.io/costpulse/";
-const VERSION = "2026-08-20.pub5";
+const VERSION = "2026-08-20.pub6";
 const QR_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADSAQMAAAAFVwwBAAAABlBMVEUPTTj////Bc2G+AAABQ0lEQVR42u1YWw7DIAyLxgE4ElfnSBwAKYud0O2nv5O1rZomWn4sP5KA+e0z7b/3zXvT4ukTi+7NfeMd3x92/3x6D3gC7+7ua+w+Y4E1PsrhDAITYfPZFtZJryRO8NnggSGOcwOhG3QXxUl/AlvlSNWfmfd9/UTz/ipSm3Jfr3L+pDlDcbBqIwuUIM4WSV8WYff4j7oEqCaJ0xB5G0Yy2ZhU+TzYnOo3SX9mzQwmwafToop1CYMHWHVv9KeJ+pM9iM3ICXJX8ZfDGRwyPjXUkUxFf2aIAmEEKilV5ZPwqHt7k16wLuXIZBS9ar5q3hmlKe1PaG0ckzgkp1FF5yV2IivFNftmzp+nOl3Tneh5c3cG6oCUPR+xaWb91Mx74YQnj/TC581ZXT6dsHTvQ9g3Lbun6PxZ90slPQIl2Y/+94O/t/cEq8Cg5/RZpdIAAAAASUVORK5CYII=";
 
 const COMPANIES = {
@@ -1355,29 +1355,39 @@ function openMobile(){
 function copyUrl(){ try{ navigator.clipboard.writeText(APP_URL); }catch(e){} toast("Länk kopierad.","good"); }
 
 /* ============================= Auto-uppdatering ============================= */
+function baseUrl(){ return location.href.split("#")[0].split("?")[0]; }
 function showUpdateBanner(ver){ const b=document.getElementById("updateBanner"); if(!b) return;
-  document.getElementById("updateVer").textContent="En ny version ("+ver+") finns. Klicka för att uppdatera.";
+  document.getElementById("updateVer").textContent="Ny version ("+ver+"). Klicka för att uppdatera nu.";
   b.style.display="block"; }
-function doUpdate(){ try{ localStorage.setItem("slimma.seenversion", "pending"); }catch(e){} location.reload(); }
+function doUpdate(latest){ // ladda om med cache-bust så den hämtar den nya filen
+  const v=(typeof latest==="string"&&latest)||("cb"+Date.now());
+  location.replace(baseUrl()+"?v="+encodeURIComponent(v)); }
 async function checkForUpdate(){
   try{
-    const base=location.href.split("#")[0];
-    const u=base+(base.includes("?")?"&":"?")+"cpv="+Date.now();
-    const r=await fetch(u,{cache:"no-store"});
+    const r=await fetch(baseUrl()+"?cb="+Date.now(),{cache:"no-store"});
     if(!r.ok) return;
     const txt=await r.text();
     const m=txt.match(/const VERSION\s*=\s*"([^"]+)"/);
-    if(m && m[1] && m[1]!==VERSION && m[1]!=="2026-08-19.4") showUpdateBanner(m[1]);
+    const latest=m&&m[1];
+    if(latest && latest!==VERSION){
+      showUpdateBanner(latest);
+      // auto-uppdatera EN gång per session per målversion (undvik loop om cachen är envis)
+      const guard="slimma.autoreloaded";
+      if(sessionStorage.getItem(guard)!==latest){
+        sessionStorage.setItem(guard, latest);
+        setTimeout(()=>doUpdate(latest), 1200);
+      }
+    }
   }catch(e){ /* same-origin fetch ej tillåten – relaunch hämtar ändå senaste */ }
 }
 function initUpdates(){
   try{
     const seen=localStorage.getItem("slimma.seenversion");
-    if(seen && seen!==VERSION && seen!=="pending") toast("✅ Uppdaterad till senaste version.","good");
+    if(seen && seen!==VERSION) toast("✅ Uppdaterad till senaste version ("+VERSION+").","good");
     localStorage.setItem("slimma.seenversion", VERSION);
   }catch(e){}
   checkForUpdate();
-  setInterval(checkForUpdate, 90000);
+  setInterval(checkForUpdate, 60000);
   document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkForUpdate(); });
 }
 
