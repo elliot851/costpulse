@@ -126,51 +126,64 @@
   .itemrow-amt{text-align:right;white-space:nowrap;flex:none}
   .itemrow-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-left:34px}
   html,body{touch-action:manipulation}
-  /* ===================== MOBIL: enklare, större, ingen zoom ===================== */
+  /* ===================== MOBIL: kompakt, enkel, ingen zoom ===================== */
   @media(max-width:640px){
-    .wrap{padding:14px 12px 90px}
-    .card{padding:16px;border-radius:16px}
-    .innerbox{padding:14px;border-radius:14px}
-    .hero-total{font-size:42px}
-    .split,.cols3{gap:12px}
-    .topbar-in{padding:10px 12px;gap:8px}
+    .wrap{padding:12px 12px 88px}
+    .card{padding:14px;border-radius:16px}
+    .hero{padding:16px}
+    .innerbox{padding:11px;border-radius:12px}
+    .hero-total{font-size:32px;letter-spacing:-.02em}
+    .split,.cols3{gap:10px}
+    .topbar-in{padding:9px 12px;gap:8px}
     .topbar-in .muted.small{display:none}
-    /* Flikrad: horisontell scroll, stora tydliga tap-targets */
-    .tabbar{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:20px}
+    /* Hero-stats sida vid sida = mindre scroll */
+    .herostats{grid-template-columns:1fr 1fr;gap:8px}
+    .herostats .innerbox{padding:10px}
+    .herostats .hstat{font-size:19px!important}
+    .herostats .eyebrow{font-size:9px;letter-spacing:.1em}
+    .herostats .chip{font-size:10px;padding:2px 6px}
+    .herostats .barbg{height:9px}
+    /* Hero-knappar 2 per rad */
+    .heroacts{gap:8px!important}
+    .heroacts .btn.lg{flex:1 1 calc(50% - 4px);width:auto;padding:12px 8px;font-size:14px;min-height:44px}
+    /* Flikrad: horisontell scroll, tydliga tap-targets */
+    .tabbar{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:5px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:16px;padding:4px}
     .tabbar::-webkit-scrollbar{display:none}
-    .tab{flex:0 0 auto;padding:12px 18px;font-size:15px;min-height:44px}
-    /* Knappar: större och fullbredd */
-    .btn{padding:12px 16px;font-size:15px;min-height:46px}
-    .btn.sm{padding:9px 12px;font-size:13px;min-height:38px}
-    .btn.lg{width:100%;justify-content:center;padding:15px}
-    .btn.icon{width:44px;height:44px;justify-content:center}
-    .btn.sm.icon{width:40px;height:40px}
-    /* Inputs: 16px så mobilen inte auto-zoomar, luftigare */
-    input,select,textarea{font-size:16px;padding:13px 12px}
-    label.field{font-size:14px}
-    /* Dölj sekundära tabellkolumner för enkelhet */
+    .tab{flex:0 0 auto;padding:9px 14px;font-size:14px;min-height:40px}
+    #tabbody{margin-top:16px!important}
+    /* Knappar */
+    .btn{padding:10px 14px;font-size:14px;min-height:42px}
+    .btn.sm{padding:8px 11px;font-size:13px;min-height:36px}
+    .btn.lg{padding:13px;font-size:14px}
+    .btn.icon{width:42px;height:42px;justify-content:center}
+    .btn.sm.icon{width:36px;height:36px;padding:0}
+    /* Inputs: 16px så mobilen inte auto-zoomar */
+    input,select,textarea{font-size:16px;padding:12px}
+    label.field{font-size:13px}
+    /* Dölj sekundära tabellkolumner */
     .hide-sm{display:none!important}
-    th,td{padding:11px 6px}
-    table{font-size:15px}
-    /* Rubriker lite mindre */
-    .card h3{font-size:17px}
-    .hero-total{letter-spacing:-.02em}
-    /* Modaler nästan fullskärm och lätta att stänga */
+    th,td{padding:10px 6px}
+    table{font-size:14px}
+    /* Mindre rubriker/text */
+    .card h3{font-size:16px}
+    .eyebrow{font-size:10px}
+    /* Modaler som bottenpaneler */
     .modalbg{padding:0;align-items:flex-end}
-    .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:92vh;padding:20px}
+    .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:92vh;padding:18px}
     .close{font-size:28px;padding:4px 8px}
-    /* Uppdaterings-banner fullbredd nertill */
     #updateBanner{left:8px;right:8px;bottom:8px}
-    /* Kv-rader luftigare */
-    .kv{padding:10px 0;font-size:15px}
-    /* DET BLÖDER-bannern: stapla snyggt istället för att trängas */
-    .bleed .row{flex-wrap:wrap}
+    .kv{padding:9px 0;font-size:14px}
+    /* DET BLÖDER-bannern kompakt */
+    .bleed{padding:14px 16px}
+    .bleednum{font-size:17px!important}
+    .bleed .row{flex-wrap:wrap;gap:10px}
     .bleed .row > div[style*="flex:1"]{flex:1 1 100%}
-    .bleed .btn{width:100%;justify-content:center;margin-top:10px}
-    /* Kostnadslista: knappar och belopp luftigare på mobil */
+    .bleed .btn{width:100%;justify-content:center}
+    /* Kostnadslista */
     .itemrow-actions{padding-left:0;gap:8px}
     .itemrow-actions .btn{flex:1 1 auto;justify-content:center;min-width:calc(50% - 4px)}
-    .itemrow-amt .tabular{font-size:16px!important}
+    .itemrow-amt .tabular{font-size:15px!important}
+    .monthsel{min-width:100px!important;font-size:14px!important;padding:9px!important}
   }
 </style>
 </head>
@@ -242,7 +255,7 @@ function icon(name){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" str
 
 /* ============================= App-URL, version & QR ============================= */
 const APP_URL = "https://elliot851.github.io/costpulse/";
-const VERSION = "2026-08-20.pub4";
+const VERSION = "2026-08-20.pub5";
 const QR_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADSAQMAAAAFVwwBAAAABlBMVEUPTTj////Bc2G+AAABQ0lEQVR42u1YWw7DIAyLxgE4ElfnSBwAKYud0O2nv5O1rZomWn4sP5KA+e0z7b/3zXvT4ukTi+7NfeMd3x92/3x6D3gC7+7ua+w+Y4E1PsrhDAITYfPZFtZJryRO8NnggSGOcwOhG3QXxUl/AlvlSNWfmfd9/UTz/ipSm3Jfr3L+pDlDcbBqIwuUIM4WSV8WYff4j7oEqCaJ0xB5G0Yy2ZhU+TzYnOo3SX9mzQwmwafToop1CYMHWHVv9KeJ+pM9iM3ICXJX8ZfDGRwyPjXUkUxFf2aIAmEEKilV5ZPwqHt7k16wLuXIZBS9ar5q3hmlKe1PaG0ckzgkp1FF5yV2IivFNftmzp+nOl3Tneh5c3cG6oCUPR+xaWb91Mx74YQnj/TC581ZXT6dsHTvQ9g3Lbun6PxZ90slPQIl2Y/+94O/t/cEq8Cg5/RZpdIAAAAASUVORK5CYII=";
 
 const COMPANIES = {
@@ -295,10 +308,28 @@ const State = {
   get k(){ return K(this.ns); }
 };
 
-function getItems(){ return load(State.k.costs, null) || []; }
-function setItems(items){ save(State.k.costs, items); snapshotIfNeeded(); }
-function getSim(){ return new Set(load(State.k.sim, [])); }
-function setSim(set){ save(State.k.sim, Array.from(set)); }
+/* ---- Månadslager: kostnader + simulering lagras per (bolag, månad) ---- */
+function monthsKey(){ return "slimma."+State.ns+".months.v1"; }
+function curMonthKey(){ return "slimma."+State.ns+".curmonth.v1"; }
+function costKey(m){ return "slimma."+State.ns+".costs."+(m||curMonth())+".v1"; }
+function simKey(m){ return "slimma."+State.ns+".sim."+(m||curMonth())+".v1"; }
+function getMonths(){ let m=load(monthsKey(),null); if(!Array.isArray(m)||!m.length){ m=["aktuell"]; localStorage.setItem(monthsKey(),JSON.stringify(m)); } return m; }
+function curMonth(){ const months=getMonths(); let c=load(curMonthKey(),null); if(!c||months.indexOf(c)<0){ c=months[0]; localStorage.setItem(curMonthKey(),JSON.stringify(c)); } return c; }
+function setCurMonth(m){ localStorage.setItem(curMonthKey(),JSON.stringify(m)); }
+function ensureMonth(m){ const months=getMonths(); if(months.indexOf(m)<0){ months.push(m); localStorage.setItem(monthsKey(),JSON.stringify(months)); } }
+function addMonth(name){ name=(name||"").trim(); if(!name) return; ensureMonth(name); if(localStorage.getItem(costKey(name))===null) localStorage.setItem(costKey(name),JSON.stringify([])); setCurMonth(name); render(); }
+function renameMonth(oldN,newN){ newN=(newN||"").trim(); if(!newN||oldN===newN) return;
+  const months=getMonths().map(m=>m===oldN?newN:m); localStorage.setItem(monthsKey(),JSON.stringify(months));
+  ["costs","sim"].forEach(t=>{ const ok="slimma."+State.ns+"."+t+"."+oldN+".v1", nk="slimma."+State.ns+"."+t+"."+newN+".v1"; const v=localStorage.getItem(ok); if(v!==null){ localStorage.setItem(nk,v); localStorage.removeItem(ok); } });
+  if(curMonth()===oldN) setCurMonth(newN); render(); }
+function deleteMonth(m){ let months=getMonths(); if(months.length<=1){ toast("Kan inte ta bort sista månaden.","bad"); return; }
+  months=months.filter(x=>x!==m); localStorage.setItem(monthsKey(),JSON.stringify(months));
+  localStorage.removeItem(costKey(m)); localStorage.removeItem(simKey(m));
+  if(curMonth()===m) setCurMonth(months[0]); render(); }
+function getItems(){ return load(costKey(), null) || []; }
+function setItems(items){ save(costKey(), items); snapshotIfNeeded(); }
+function getSim(){ return new Set(load(simKey(), [])); }
+function setSim(set){ save(simKey(), Array.from(set)); }
 function getSettings(){ return Object.assign({}, DEFAULT_SETTINGS, load(State.k.settings, {})); }
 function setSettings(patch){ save(State.k.settings, Object.assign(getSettings(), patch)); }
 function getSavings(){ return load(State.k.savings, []); }
@@ -308,15 +339,17 @@ function getStores(){ return load(State.k.stores, DEFAULT_STORES[State.ns].map(s
 function getBudgets(){ return load(State.k.budgets, {}); }
 function getPrefs(){ return Object.assign({sound:true,haptics:true}, load(State.k.prefs, {})); }
 
-/* seed on first run */
+/* seed on first run (+ migrera gammal enkellista → månad "aktuell") */
 function ensureSeed(){
-  const raw = localStorage.getItem(State.k.costs);
-  if(raw!==null) return;
-  if(State.ns==="westros") setItemsRaw(withIds(JUNE_2026));
-  else setItemsRaw(withIds(EEFS_SEED));
+  getMonths(); curMonth(); // säkerställ månadsstruktur
+  const ck=costKey();
+  if(localStorage.getItem(ck)!==null) return;
+  const old=localStorage.getItem("slimma."+State.ns+".costs.v1"); // äldre version utan månader
+  if(old!==null && curMonth()==="aktuell"){ localStorage.setItem(ck, old); return; }
+  localStorage.setItem(ck, JSON.stringify(State.ns==="westros"?withIds(JUNE_2026):withIds(EEFS_SEED)));
 }
 function withIds(list){ return list.map(i=>Object.assign({},i,{id:uid(), transactions:i.transactions?i.transactions.map(t=>Object.assign({id:t.id||uid()},t)):undefined})); }
-function setItemsRaw(items){ localStorage.setItem(State.k.costs, JSON.stringify(items)); }
+function setItemsRaw(items){ localStorage.setItem(costKey(), JSON.stringify(items)); }
 
 /* ============================= Beräkningar ============================= */
 function monthlyAmount(i){ return i.interval==="kvartal"? i.amount/3 : i.interval==="år"? i.amount/12 : i.amount; }
@@ -474,27 +507,31 @@ function render(){
       <div style="width:40px;height:40px;border-radius:99px;background:var(--danger);display:flex;align-items:center;justify-content:center;flex:none;color:#fff;font-size:20px">${icon("alert")}</div>
       <div style="flex:1">
         <div style="display:flex;align-items:center;gap:8px"><span class="dotpulse"></span><span style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--danger)">Det blöder. Skär nu.</span></div>
-        <div style="font-size:22px;font-weight:600;margin-top:4px">${fmtSEK(daily)} <span class="muted" style="font-size:15px;font-weight:400">brinner varje dag för att gå +/− 0</span></div>
+        <div class="bleednum" style="font-size:22px;font-weight:600;margin-top:4px">${fmtSEK(daily)} <span class="muted" style="font-size:15px;font-weight:400">brinner varje dag för att gå +/− 0</span></div>
         <div class="muted small" style="margin-top:2px">Total ${fmtSEK(total)}/mån · <b style="color:var(--danger)">${fmtSEK(total-s.goal)}</b> över målet på ${fmtSEK(s.goal)}.</div>
       </div>
       <button class="btn primary" onclick="go('kostnader')">${icon("scissors")} Skär i kostnaderna</button></div></div>`;
   }
 
   /* HERO */
-  html+=`<section class="card" style="border-radius:var(--r-3xl);padding:28px">
-    <div class="row wrap" style="justify-content:space-between;align-items:flex-start">
+  html+=`<section class="card hero" style="border-radius:var(--r-3xl)">
+    <div class="row wrap" style="justify-content:space-between;align-items:center;gap:8px">
+      <div class="eyebrow" style="display:flex;align-items:center;gap:8px"><img class="logoimg" style="height:15px;width:15px" src="${LOGO&&LOGO.indexOf('data:')===0?LOGO:''}" alt="">${esc(State.co.label)}</div>
+      ${monthBar()}
+    </div>
+    <div class="row wrap" style="justify-content:space-between;align-items:flex-start;margin-top:8px">
       <div>
-        <div class="eyebrow" style="display:flex;align-items:center;gap:8px"><img class="logoimg" style="height:16px;width:16px" src="${LOGO&&LOGO.indexOf('data:')===0?LOGO:''}" alt="">${esc(State.co.label)} · totala månadskostnader</div>
-        <div class="hero-total tabular" style="color:${zc};margin-top:10px">${fmtSEK(simActive?st:total)}</div>
-        <div class="muted small" style="margin-top:6px">${fmtSEK((simActive?st:total)*12)} / år ${simActive?`· <span style="color:var(--warning)">simulering aktiv (riktigt: ${fmtSEK(total)})</span>`:""}</div>
+        <div class="muted" style="font-size:12px">Totala månadskostnader · ${esc(monthNice(curMonth()))}</div>
+        <div class="hero-total tabular" style="color:${zc};margin-top:4px">${fmtSEK(simActive?st:total)}</div>
+        <div class="muted small" style="margin-top:4px">${fmtSEK((simActive?st:total)*12)} / år ${simActive?`· <span style="color:var(--warning)">simulering (riktigt: ${fmtSEK(total)})</span>`:""}</div>
       </div>
       <button class="btn ghost icon" onclick="openSettings()" title="Inställningar">${icon("settings")}</button>
     </div>
-    <div class="split" style="margin-top:24px">
+    <div class="split herostats" style="margin-top:16px">
       <div class="innerbox">
         <div class="eyebrow">Daglig kostnad</div>
-        <div class="row" style="align-items:baseline;gap:10px;margin-top:6px">
-          <div class="tabular" style="font-size:30px;font-weight:700;color:${zc}">${fmtSEK(simActive?st/30:daily)}</div>
+        <div class="row" style="align-items:baseline;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <div class="hstat tabular" style="font-size:26px;font-weight:700;color:${zc}">${fmtSEK(simActive?st/30:daily)}</div>
           <span class="chip" style="background:color-mix(in oklab,${zc} 20%,transparent);color:${zc}">${zone.key==="green"?"Grön":zone.key==="yellow"?"Gul":"Röd"} zon</span>
         </div>
         <div class="muted small" style="margin-top:6px">${zone.label}</div>
@@ -507,11 +544,11 @@ function render(){
         ${goalBar(total,s)}
       </div>
     </div>
-    <div class="row wrap" style="margin-top:24px;gap:12px">
-      <button class="btn primary lg" onclick="openItemDialog()">${icon("plus")} Lägg till kostnad</button>
+    <div class="row wrap heroacts" style="margin-top:16px;gap:10px">
+      <button class="btn primary lg" onclick="openItemDialog()">${icon("plus")} Lägg till</button>
       <button class="btn green lg" onclick="go('besparingar')">${icon("down")} Logga besparing</button>
-      <button class="btn lg" onclick="go('import')">${icon("upload")} Importera transaktioner</button>
-      ${simActive?`<button class="btn ghost lg" onclick="clearSim()">${icon("rotate")} Nollställ simulering (${sim.size})</button>`:""}
+      <button class="btn lg" onclick="go('import')">${icon("upload")} Importera</button>
+      ${simActive?`<button class="btn ghost lg" onclick="clearSim()">${icon("rotate")} Nollställ (${sim.size})</button>`:""}
     </div>
   </section>`;
 
@@ -540,6 +577,25 @@ function goalBar(total,s){
 
 function go(tab){ State.tab=tab; render(); window.scrollTo({top:document.querySelector('.tabbar').offsetTop-10,behavior:'smooth'}); }
 function refresh(){ render(); }
+
+/* ---- Månadsväljare ---- */
+const SV_MON={"januari":"jan","februari":"feb","mars":"mar","april":"apr","maj":"maj","juni":"jun","juli":"jul","augusti":"aug","september":"sep","oktober":"okt","november":"nov","december":"dec"};
+function monthNice(m){ if(m==="aktuell") return "Aktuell"; const mm=m.match(/^([a-zåäö]+)-?(\d{4})$/i); if(mm) return mm[1].charAt(0).toUpperCase()+mm[1].slice(1)+" "+mm[2]; return m; }
+function monthBar(){
+  const months=getMonths(), cur=curMonth();
+  return `<div class="row" style="align-items:center;gap:6px;flex-wrap:nowrap">
+    <select class="monthsel" onchange="onMonthChange(this.value)" title="Byt månad" style="width:auto;min-width:118px;font-weight:600">
+      ${months.map(m=>`<option value="${esc(m)}" ${m===cur?"selected":""}>${esc(monthNice(m))}</option>`).join("")}
+    </select>
+    <button class="btn ghost icon sm" title="Ny månad" onclick="promptAddMonth()">${icon("plus")}</button>
+    <button class="btn ghost icon sm" title="Byt namn på månad" onclick="promptRenameMonth()">${icon("pencil")}</button>
+    ${months.length>1?`<button class="btn ghost icon sm" title="Ta bort månad" onclick="promptDeleteMonth()">${icon("trash")}</button>`:""}
+  </div>`;
+}
+function onMonthChange(m){ setCurMonth(m); render(); }
+function promptAddMonth(){ const n=prompt("Namn på ny månad (t.ex. augusti-2026):",""); if(n&&n.trim()){ addMonth(n.trim()); toast("Månad tillagd: "+monthNice(n.trim()),"good"); } }
+function promptRenameMonth(){ const c=curMonth(); const n=prompt("Nytt namn för månaden:",c); if(n&&n.trim()&&n.trim()!==c) renameMonth(c,n.trim()); }
+function promptDeleteMonth(){ const c=curMonth(); if(confirm("Ta bort månaden \""+monthNice(c)+"\" och alla dess poster?")) deleteMonth(c); }
 
 /* ============================= Tab dispatcher ============================= */
 function renderTab(){
@@ -991,25 +1047,51 @@ window.__DS=[];
 function showDatasetChooser(datasets){
   window.__DS=datasets;
   const el=document.getElementById("dschooser"); if(!el) return;
-  el.innerHTML=`<div class="muted small" style="margin-bottom:8px">Hittade ${datasets.length} dataset. Klicka för att ladda in (ersätter nuvarande poster för det bolaget):</div>`+
+  el.innerHTML=`<div class="row wrap" style="justify-content:space-between;align-items:center;margin-bottom:8px"><span class="muted small">Hittade ${datasets.length} dataset. Ladda in en månad – eller allt på en gång:</span>
+      ${datasets.length>1?`<button class="btn green solid sm" onclick="loadAllDatasets()">✅ Ladda in ALLA</button>`:""}</div>`+
     datasets.map((d,idx)=>{ const label=(MONTH_LABEL[d.bolag]&&MONTH_LABEL[d.bolag][d.manad])||(d.bolag+" – "+d.manad);
       const sum=d.items.reduce((s,i)=>s+monthlyAmount(i),0), tx=d.items.reduce((s,i)=>s+((i.transactions||[]).length),0);
       return `<div class="kv"><span><b>${esc(label)}</b><br><span class="muted small">${d.items.length} poster · ${fmtSEK(sum)}/mån${tx?` · ${tx} transaktioner`:""}</span></span>
         <button class="btn accent sm" onclick="loadImportedDataset(${idx})">Ladda in →</button></div>`;
     }).join("");
 }
+function pruneEmptyAktuell(){ const months=getMonths();
+  if(months.length>1 && months.indexOf("aktuell")>=0){ const a=load(costKey("aktuell"),[]); if(!a||!a.length){
+    const rest=months.filter(m=>m!=="aktuell"); localStorage.setItem(monthsKey(),JSON.stringify(rest));
+    localStorage.removeItem(costKey("aktuell")); localStorage.removeItem(simKey("aktuell"));
+    if(curMonth()==="aktuell") setCurMonth(rest[0]); } } }
 function loadImportedDataset(idx){
   const d=window.__DS[idx]; if(!d) return;
-  if(d.bolag!==State.ns && COMPANIES[d.bolag]){ State.ns=d.bolag; }
-  setItemsRaw(withIds(d.items)); setSim(new Set()); snapshotIfNeeded();
+  if(d.bolag!==State.ns && COMPANIES[d.bolag]) State.ns=d.bolag;
+  ensureMonth(d.manad); setCurMonth(d.manad);
+  localStorage.setItem(costKey(d.manad), JSON.stringify(withIds(d.items)));
+  localStorage.setItem(simKey(d.manad), JSON.stringify([]));
+  pruneEmptyAktuell(); setCurMonth(d.manad); snapshotIfNeeded();
   const label=(MONTH_LABEL[d.bolag]&&MONTH_LABEL[d.bolag][d.manad])||d.bolag;
   toast(`✅ Laddade in ${esc(label)} – ${d.items.length} poster.`,"good");
   celebrate(false); chime(false);
   State.tab="oversikt"; render();
 }
+function loadAllDatasets(){
+  const ds=window.__DS||[]; if(!ds.length) return;
+  let firstNs=null, firstMonth=null, n=0;
+  ds.forEach(d=>{ if(!COMPANIES[d.bolag]) return;
+    State.ns=d.bolag; ensureMonth(d.manad);
+    localStorage.setItem(costKey(d.manad), JSON.stringify(withIds(d.items)));
+    localStorage.setItem(simKey(d.manad), JSON.stringify([]));
+    setCurMonth(d.manad); n++;
+    if(firstNs===null){ firstNs=d.bolag; firstMonth=d.manad; }
+  });
+  if(firstNs){ State.ns=firstNs; setCurMonth(firstMonth); }
+  ds.forEach(d=>{ if(COMPANIES[d.bolag]){ const p=State.ns; State.ns=d.bolag; pruneEmptyAktuell(); State.ns=p; } });
+  if(firstNs){ State.ns=firstNs; setCurMonth(firstMonth); }
+  toast(`✅ ${n} dataset inlästa som månader – växla månad uppe i toppen.`,"good");
+  celebrate(true); chime(false);
+  State.tab="oversikt"; render();
+}
 function restoreBackup(d){
   if(d.ns && COMPANIES[d.ns]) State.ns=d.ns;
-  if(d.items) localStorage.setItem(State.k.costs,JSON.stringify(d.items));
+  if(d.items) localStorage.setItem(costKey(),JSON.stringify(d.items));
   if(d.settings) localStorage.setItem(State.k.settings,JSON.stringify(d.settings));
   if(d.savings) localStorage.setItem(State.k.savings,JSON.stringify(d.savings));
   if(d.costlog) localStorage.setItem(State.k.costlog,JSON.stringify(d.costlog));
@@ -1135,8 +1217,10 @@ function setBudget(c,v){ const b=getBudgets(); const n=parseSwedishNumber(v); b[
 function setPref(k,v){ save(State.k.prefs, Object.assign(getPrefs(),{[k]:v})); }
 function loadDataset(which){ if(!confirm("Detta ersätter alla nuvarande poster för Westros. Fortsätt?")) return;
   setItemsRaw(withIds(which==="june"?JUNE_2026:JULY_2026)); setSim(new Set()); toast((which==="june"?"Juni":"Juli")+"-datasetet laddat.","good"); render(); }
-function resetCompany(){ if(!confirm("Återställ "+State.co.short+" till startdata? Detta rensar dina ändringar.")) return;
-  [State.k.costs,State.k.sim,State.k.settings,State.k.history,State.k.savings,State.k.costlog,State.k.focus,State.k.stores,State.k.budgets].forEach(k=>localStorage.removeItem(k));
+function resetCompany(){ if(!confirm("Återställ "+State.co.short+" till startdata? Detta rensar dina ändringar och alla månader.")) return;
+  const pre="slimma."+State.ns+"."; Object.keys(localStorage).forEach(k=>{ if(k.indexOf(pre)===0) localStorage.removeItem(k); });
+  [State.k.settings,State.k.history,State.k.savings,State.k.costlog,State.k.focus,State.k.stores,State.k.budgets].forEach(k=>localStorage.removeItem(k));
+  localStorage.removeItem("slimma."+State.ns+".costs.v1");
   render(); toast("Återställt.","good"); }
 
 /* ============================= Item / Reduce / Neg / Tx dialogs ============================= */
