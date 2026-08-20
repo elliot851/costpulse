@@ -242,7 +242,7 @@ function icon(name){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" str
 
 /* ============================= App-URL, version & QR ============================= */
 const APP_URL = "https://elliot851.github.io/costpulse/";
-const VERSION = "2026-08-20.pub3";
+const VERSION = "2026-08-20.pub4";
 const QR_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADSAQMAAAAFVwwBAAAABlBMVEUPTTj////Bc2G+AAABQ0lEQVR42u1YWw7DIAyLxgE4ElfnSBwAKYud0O2nv5O1rZomWn4sP5KA+e0z7b/3zXvT4ukTi+7NfeMd3x92/3x6D3gC7+7ua+w+Y4E1PsrhDAITYfPZFtZJryRO8NnggSGOcwOhG3QXxUl/AlvlSNWfmfd9/UTz/ipSm3Jfr3L+pDlDcbBqIwuUIM4WSV8WYff4j7oEqCaJ0xB5G0Yy2ZhU+TzYnOo3SX9mzQwmwafToop1CYMHWHVv9KeJ+pM9iM3ICXJX8ZfDGRwyPjXUkUxFf2aIAmEEKilV5ZPwqHt7k16wLuXIZBS9ar5q3hmlKe1PaG0ckzgkp1FF5yV2IivFNftmzp+nOl3Tneh5c3cG6oCUPR+xaWb91Mx74YQnj/TC581ZXT6dsHTvQ9g3Lbun6PxZ90slPQIl2Y/+94O/t/cEq8Cg5/RZpdIAAAAASUVORK5CYII=";
 
 const COMPANIES = {
@@ -817,7 +817,14 @@ function removeStore(id){ save(State.k.stores,getStores().filter(s=>s.id!==id));
 /* ============================= IMPORT (koppling) ============================= */
 let PARSED=[];
 function tabImport(){
-  return `<div class="card"><h3>⇪ Importera transaktioner i bulk</h3>
+  return `<div class="card"><h3>📥 Ladda in fullständig data</h3>
+    <div class="muted small">Har du en <b>CostPulse-export</b> (JSON-backup eller <code>kostnader.csv</code>/<code>costpulse-data.json</code>)? Ladda upp den så läser appen in hela datasetet – poster, transaktioner och kategorier – och du väljer vilken månad/bolag som ska laddas.</div>
+    <div class="row wrap" style="margin-top:12px;gap:8px">
+      <label class="btn accent" style="cursor:pointer">⇪ Ladda upp JSON eller CSV<input type="file" id="fulldata" accept=".json,.csv" style="display:none"></label>
+    </div>
+    <div id="dschooser" style="margin-top:14px"></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>⇪ Importera transaktioner i bulk</h3>
     <div class="muted small">Klistra in eller ladda upp en export från banken, PayPal, Shopify eller Stripe (CSV eller kopierad text). CostPulse läser <b>datum, beskrivning och belopp</b>, sorterar automatiskt in raderna i rätt kategori och skapar/uppdaterar kostnadsposter. Inget lämnar din dator.</div>
     <div id="drop" class="drop" style="margin-top:14px">📄 Släpp CSV/TXT-fil här, eller <label style="color:var(--accent);cursor:pointer;text-decoration:underline">bläddra<input type="file" id="file" accept=".csv,.txt,.tsv" style="display:none"></label></div>
     <label class="field" style="margin-top:14px">…eller klistra in rader (en per rad – "datum; beskrivning; belopp" eller CSV/tab)</label>
@@ -831,19 +838,22 @@ Abonnemang; 2 500"></textarea>
     <div id="preview" style="margin-top:16px"></div>
   </div>
   <div class="card" style="margin-top:16px"><h3>⇩ Ladda ner / säkerhetskopiera</h3>
-    <div class="muted small">Exportera allt så att du alltid har dina transaktioner sparade.</div>
+    <div class="muted small">Exportera i CostPulse-format (samma som import-guiden) så att du alltid har din data sparad och kan flytta mellan enheter.</div>
     <div class="row wrap" style="margin-top:12px;gap:8px">
-      <button class="btn" onclick="exportTxCSV()">⇩ Alla transaktioner (CSV)</button>
-      <button class="btn" onclick="exportItemsCSV()">⇩ Kostnadsposter (CSV)</button>
-      <button class="btn" onclick="exportJSON()">⇩ Full säkerhetskopia (JSON)</button>
+      <button class="btn accent" onclick="exportAllCsv()">📦 Full export (alla CSV)</button>
+      <button class="btn" onclick="exportJSON()">⇩ Backup (JSON)</button>
+      <button class="btn" onclick="exportItemsCSV()">⇩ kostnader.csv</button>
+      <button class="btn" onclick="exportTxCSV()">⇩ transaktioner.csv</button>
       <label class="btn" style="cursor:pointer">⇪ Återställ JSON<input type="file" id="restore" accept=".json" style="display:none"></label>
     </div>
   </div>`;
 }
 function initImport(){
   const drop=document.getElementById("drop"), file=document.getElementById("file"), restore=document.getElementById("restore");
+  const fulldata=document.getElementById("fulldata");
   file.addEventListener("change",e=>{ if(e.target.files[0]) readFile(e.target.files[0]); });
   restore.addEventListener("change",e=>{ if(e.target.files[0]) readRestore(e.target.files[0]); });
+  if(fulldata) fulldata.addEventListener("change",e=>{ if(e.target.files[0]) importFullData(e.target.files[0]); });
   ["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("hot");}));
   ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("hot");}));
   drop.addEventListener("drop",e=>{ const f=e.dataTransfer.files[0]; if(f) readFile(f); });
@@ -918,6 +928,96 @@ function applyImport(mode){
   go("kostnader");
 }
 
+/* ---- Fullständig data-import (CostPulse-export: JSON eller kostnader.csv) ---- */
+const MONTH_LABEL={westros:{"juni-2026":"Westros – juni 2026","juli-2026":"Westros – juli 2026","aktuell":"Westros"},eefs:{"aktuell":"EEFS"}};
+function importFullData(f){
+  const r=new FileReader();
+  r.onload=()=>{
+    const text=r.result;
+    let datasets=null;
+    try{
+      const d=JSON.parse(text);
+      if(d && (d.june2026 || d.july2026 || d.companies)) datasets=datasetsFromExportJson(d);
+      else if(d && Array.isArray(d.items)){ // egen backup
+        restoreBackup(d); toast("Backup återställd ("+(d.ns||"okänt bolag")+").","good"); render(); return;
+      }
+    }catch(e){ /* inte JSON – prova CSV */ }
+    if(!datasets){
+      const first=(text.split(/\r?\n/)[0]||"").toLowerCase();
+      if(/^bolag;.*namn;.*belopp/.test(first)) datasets=datasetsFromKostnaderCsv(text);
+      else if(/^bolag;.*kostnadspost/.test(first)){ toast("Det här är transaktioner.csv – ladda upp kostnader.csv eller costpulse-data.json för fullständig data.","bad"); return; }
+    }
+    if(!datasets || !datasets.length){ toast("Kände inte igen filformatet. Använd JSON-backup, costpulse-data.json eller kostnader.csv.","bad"); return; }
+    showDatasetChooser(datasets);
+  };
+  r.readAsText(f);
+}
+function normItem(o){ return {name:String(o.name||""),amount:+o.amount||0,category:o.category||"Övrigt",interval:o.interval||"månad",note:o.note||undefined,
+  transactions:Array.isArray(o.transactions)?o.transactions.map(t=>({id:t.id||uid(),date:t.date||undefined,description:String(t.description||""),amount:+t.amount||0})):undefined}; }
+function datasetsFromExportJson(d){
+  const out=[];
+  // Nytt format: { companies: { westros:{months:{...}}, eefs:{items:[...]} } }
+  if(d.companies && !Array.isArray(d.companies) && typeof d.companies==="object"){
+    Object.keys(d.companies).forEach(bolag=>{ const c=d.companies[bolag];
+      if(c.months && typeof c.months==="object"){ Object.keys(c.months).forEach(manad=>{
+        const arr=c.months[manad]; if(Array.isArray(arr)) out.push({bolag,manad,items:arr.map(normItem)}); }); }
+      if(Array.isArray(c.items)) out.push({bolag,manad:"aktuell",items:c.items.map(normItem)});
+    });
+    if(out.length) return out;
+  }
+  // Äldre format: { june2026:{items}, july2026:{items}, companies:[{id,seedItems}] }
+  if(d.june2026&&d.june2026.items) out.push({bolag:"westros",manad:"juni-2026",items:d.june2026.items.map(normItem)});
+  if(d.july2026&&d.july2026.items) out.push({bolag:"westros",manad:"juli-2026",items:d.july2026.items.map(normItem)});
+  if(Array.isArray(d.companies)){ const e=d.companies.find(c=>c.id==="eefs"); if(e&&e.seedItems) out.push({bolag:"eefs",manad:"aktuell",items:e.seedItems.map(normItem)}); }
+  return out;
+}
+function splitCsvLine(line){ const out=[]; let cur="",q=false; for(let i=0;i<line.length;i++){const c=line[i];
+  if(c==='"'){ if(q&&line[i+1]==='"'){cur+='"';i++;} else q=!q; } else if(c===';'&&!q){ out.push(cur);cur=""; } else cur+=c; } out.push(cur); return out.map(s=>s.trim()); }
+function datasetsFromKostnaderCsv(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  const header=splitCsvLine(lines[0]).map(h=>h.toLowerCase());
+  const col=n=>header.indexOf(n);
+  const cB=col("bolag"),cM=col("manad"),cN=col("namn"),cA=col("belopp"),cI=col("intervall"),cK=col("kategori"),cNo=col("anteckning");
+  const groups={};
+  for(let i=1;i<lines.length;i++){ const p=splitCsvLine(lines[i]); if(p.length<3) continue;
+    const bolag=(p[cB]||"westros").toLowerCase(), manad=p[cM]||"aktuell";
+    const key=bolag+"|"+manad; (groups[key]=groups[key]||{bolag,manad,items:[]}).items.push({
+      name:p[cN]||"", amount:parseSwedishNumber(p[cA]), category:CATEGORIES.includes(p[cK])?p[cK]:"Övrigt",
+      interval:INTERVALS.includes(p[cI])?p[cI]:"månad", note:p[cNo]||undefined });
+  }
+  return Object.values(groups).map(g=>({bolag:g.bolag,manad:g.manad,items:g.items.filter(i=>i.name&&!isNaN(i.amount))}));
+}
+window.__DS=[];
+function showDatasetChooser(datasets){
+  window.__DS=datasets;
+  const el=document.getElementById("dschooser"); if(!el) return;
+  el.innerHTML=`<div class="muted small" style="margin-bottom:8px">Hittade ${datasets.length} dataset. Klicka för att ladda in (ersätter nuvarande poster för det bolaget):</div>`+
+    datasets.map((d,idx)=>{ const label=(MONTH_LABEL[d.bolag]&&MONTH_LABEL[d.bolag][d.manad])||(d.bolag+" – "+d.manad);
+      const sum=d.items.reduce((s,i)=>s+monthlyAmount(i),0), tx=d.items.reduce((s,i)=>s+((i.transactions||[]).length),0);
+      return `<div class="kv"><span><b>${esc(label)}</b><br><span class="muted small">${d.items.length} poster · ${fmtSEK(sum)}/mån${tx?` · ${tx} transaktioner`:""}</span></span>
+        <button class="btn accent sm" onclick="loadImportedDataset(${idx})">Ladda in →</button></div>`;
+    }).join("");
+}
+function loadImportedDataset(idx){
+  const d=window.__DS[idx]; if(!d) return;
+  if(d.bolag!==State.ns && COMPANIES[d.bolag]){ State.ns=d.bolag; }
+  setItemsRaw(withIds(d.items)); setSim(new Set()); snapshotIfNeeded();
+  const label=(MONTH_LABEL[d.bolag]&&MONTH_LABEL[d.bolag][d.manad])||d.bolag;
+  toast(`✅ Laddade in ${esc(label)} – ${d.items.length} poster.`,"good");
+  celebrate(false); chime(false);
+  State.tab="oversikt"; render();
+}
+function restoreBackup(d){
+  if(d.ns && COMPANIES[d.ns]) State.ns=d.ns;
+  if(d.items) localStorage.setItem(State.k.costs,JSON.stringify(d.items));
+  if(d.settings) localStorage.setItem(State.k.settings,JSON.stringify(d.settings));
+  if(d.savings) localStorage.setItem(State.k.savings,JSON.stringify(d.savings));
+  if(d.costlog) localStorage.setItem(State.k.costlog,JSON.stringify(d.costlog));
+  if(d.focus) localStorage.setItem(State.k.focus,JSON.stringify(d.focus));
+  if(d.stores) localStorage.setItem(State.k.stores,JSON.stringify(d.stores));
+  if(d.history) localStorage.setItem(State.k.history,JSON.stringify(d.history));
+}
+
 /* ---- Export ---- */
 function download(name,content,type){
   // Försök ladda ner en fil. I hostad sandbox blockeras detta – då visas innehållet att kopiera.
@@ -949,34 +1049,40 @@ function dlExport(name){ try{ const blob=new Blob([window.__expContent],{type:"t
   const url=URL.createObjectURL(blob), a=document.createElement("a"); a.href=url; a.download=name||window.__expName; document.body.appendChild(a); a.click();
   setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},200); toast("Nedladdning startad.","good"); }catch(e){ toast("Nedladdning blockerad – kopiera texten istället.","bad"); } }
 function csvCell(v){ v=String(v==null?"":v); return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
-function exportTxCSV(){
-  const items=getItems(); const rows=[["post","kategori","datum","beskrivning","belopp"]];
-  items.forEach(i=>{ if(i.transactions&&i.transactions.length) i.transactions.forEach(t=>rows.push([i.name,i.category,t.date||"",t.description,t.amount]));
-    else rows.push([i.name,i.category,"",i.name,monthlyAmount(i)]); });
-  download(`costpulse-transaktioner-${State.ns}.csv`, rows.map(r=>r.map(csvCell).join(";")).join("\n"), "text/csv;charset=utf-8");
-  toast("Transaktioner exporterade.","good");
-}
-function exportItemsCSV(){
-  const rows=[["namn","belopp","kategori","intervall","anteckning"]];
-  getItems().forEach(i=>rows.push([i.name,i.amount,i.category,i.interval,i.note||""]));
-  download(`costpulse-poster-${State.ns}.csv`, rows.map(r=>r.map(csvCell).join(";")).join("\n"), "text/csv;charset=utf-8");
-  toast("Kostnadsposter exporterade.","good");
+function csvJoin(rows){ return rows.map(r=>r.map(csvCell).join(";")).join("\n"); }
+function kostnaderCsv(){ const rows=[["bolag","manad","namn","belopp","intervall","belopp_per_manad","kategori","anteckning","antal_transaktioner"]];
+  getItems().forEach(i=>rows.push([State.ns,"aktuell",i.name,i.amount,i.interval,monthlyAmount(i).toFixed(2),i.category,i.note||"",(i.transactions||[]).length]));
+  return csvJoin(rows); }
+function transaktionerCsv(){ const rows=[["bolag","manad","kostnadspost","beskrivning","belopp","datum"]];
+  getItems().forEach(i=>(i.transactions||[]).forEach(t=>rows.push([State.ns,"aktuell",i.name,t.description,t.amount,t.date||""])));
+  return csvJoin(rows); }
+function besparingarCsv(){ const rows=[["bolag","datum","belopp_per_manad","beskrivning","mal"]];
+  getSavings().forEach(e=>rows.push([State.ns,new Date(e.t).toISOString().slice(0,10),e.amount,e.description,e.target||""])); return csvJoin(rows); }
+function extraKostnaderCsv(){ const rows=[["bolag","datum","belopp_per_manad","beskrivning","mal"]];
+  getCostlog().forEach(e=>rows.push([State.ns,new Date(e.t).toISOString().slice(0,10),e.amount,e.description,e.target||""])); return csvJoin(rows); }
+function butikerCsv(){ const rows=[["bolag","manad","butik","valuta","omsattning","vinst"]];
+  getStores().forEach(s=>rows.push([State.ns,"aktuell",s.name,s.currency,s.revenue||0,s.profit||0])); return csvJoin(rows); }
+function fokusmalCsv(){ const rows=[["bolag","titel","baslinje","mal","notering"]];
+  getFocus().forEach(g=>rows.push([State.ns,g.label,"","",g.note||""])); return csvJoin(rows); }
+function sammanfattningCsv(){ const items=getItems(), tot=computeTotal(items);
+  return csvJoin([["bolag","manad","antal_poster","total_per_manad","total_per_ar","daglig_break_even"],
+    [State.ns,"aktuell",items.length,tot.toFixed(2),(tot*12).toFixed(2),(tot/30).toFixed(2)]]); }
+function exportTxCSV(){ download(`transaktioner-${State.ns}.csv`, transaktionerCsv(), "text/csv;charset=utf-8"); toast("transaktioner.csv exporterad.","good"); }
+function exportItemsCSV(){ download(`kostnader-${State.ns}.csv`, kostnaderCsv(), "text/csv;charset=utf-8"); toast("kostnader.csv exporterad.","good"); }
+function exportAllCsv(){
+  const files=[["kostnader.csv",kostnaderCsv()],["transaktioner.csv",transaktionerCsv()],["besparingar.csv",besparingarCsv()],
+    ["extra-kostnader.csv",extraKostnaderCsv()],["butiker.csv",butikerCsv()],["lasta-valutakurser.csv","bolag;manad;valuta;kurs_till_sek;kursdatum"],
+    ["fokusmal.csv",fokusmalCsv()],["sammanfattning.csv",sammanfattningCsv()]];
+  const bundle=files.map(([n,c])=>`===== ${n} =====\n${c}`).join("\n\n");
+  download(`costpulse-full-export-${State.ns}.txt`, bundle, "text/plain;charset=utf-8");
+  toast("Full export (alla CSV) klar.","good");
 }
 function exportJSON(){
   const dump={ns:State.ns,exported:new Date().toISOString(),items:getItems(),settings:getSettings(),savings:getSavings(),costlog:getCostlog(),focus:getFocus(),stores:getStores(),history:load(State.k.history,[])};
   download(`costpulse-backup-${State.ns}.json`, JSON.stringify(dump,null,2), "application/json");
   toast("Full säkerhetskopia nedladdad.","good");
 }
-function readRestore(f){ const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result);
-  if(d.items) save(State.k.costs,d.items);
-  if(d.settings) save(State.k.settings,d.settings);
-  if(d.savings) save(State.k.savings,d.savings);
-  if(d.costlog) save(State.k.costlog,d.costlog);
-  if(d.focus) save(State.k.focus,d.focus);
-  if(d.stores) save(State.k.stores,d.stores);
-  if(d.history) localStorage.setItem(State.k.history,JSON.stringify(d.history));
-  toast("Säkerhetskopia återställd.","good"); render();
-}catch(e){ toast("Ogiltig JSON-fil.","bad"); } }; r.readAsText(f); }
+function readRestore(f){ importFullData(f); }
 
 /* ============================= MER ============================= */
 function tabMer(){
