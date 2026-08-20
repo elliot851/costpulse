@@ -2,7 +2,7 @@
 <html lang="sv">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>CostPulse</title>
 <style>
   :root{
@@ -114,6 +114,45 @@
   @keyframes bleedDot{0%,100%{opacity:1}50%{opacity:.3}}
   a{color:var(--accent)}
   .logoimg{height:20px;width:20px;object-fit:contain}
+  html,body{touch-action:manipulation}
+  /* ===================== MOBIL: enklare, större, ingen zoom ===================== */
+  @media(max-width:640px){
+    .wrap{padding:14px 12px 90px}
+    .card{padding:16px;border-radius:16px}
+    .innerbox{padding:14px;border-radius:14px}
+    .hero-total{font-size:42px}
+    .split,.cols3{gap:12px}
+    .topbar-in{padding:10px 12px;gap:8px}
+    .topbar-in .muted.small{display:none}
+    /* Flikrad: horisontell scroll, stora tydliga tap-targets */
+    .tabbar{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-top:20px}
+    .tabbar::-webkit-scrollbar{display:none}
+    .tab{flex:0 0 auto;padding:12px 18px;font-size:15px;min-height:44px}
+    /* Knappar: större och fullbredd */
+    .btn{padding:12px 16px;font-size:15px;min-height:46px}
+    .btn.sm{padding:9px 12px;font-size:13px;min-height:38px}
+    .btn.lg{width:100%;justify-content:center;padding:15px}
+    .btn.icon{width:44px;height:44px;justify-content:center}
+    .btn.sm.icon{width:40px;height:40px}
+    /* Inputs: 16px så mobilen inte auto-zoomar, luftigare */
+    input,select,textarea{font-size:16px;padding:13px 12px}
+    label.field{font-size:14px}
+    /* Dölj sekundära tabellkolumner för enkelhet */
+    .hide-sm{display:none!important}
+    th,td{padding:11px 6px}
+    table{font-size:15px}
+    /* Rubriker lite mindre */
+    .card h3{font-size:17px}
+    .hero-total{letter-spacing:-.02em}
+    /* Modaler nästan fullskärm och lätta att stänga */
+    .modalbg{padding:0;align-items:flex-end}
+    .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:92vh;padding:20px}
+    .close{font-size:28px;padding:4px 8px}
+    /* Uppdaterings-banner fullbredd nertill */
+    #updateBanner{left:8px;right:8px;bottom:8px}
+    /* Kv-rader luftigare */
+    .kv{padding:10px 0;font-size:15px}
+  }
 </style>
 </head>
 <body>
@@ -184,7 +223,7 @@ function icon(name){ return '<svg class="ic" viewBox="0 0 24 24" fill="none" str
 
 /* ============================= App-URL, version & QR ============================= */
 const APP_URL = "https://elliot851.github.io/costpulse/";
-const VERSION = "2026-08-20.pub1";
+const VERSION = "2026-08-20.pub2";
 const QR_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADSAQMAAAAFVwwBAAAABlBMVEUPTTj////Bc2G+AAABQ0lEQVR42u1YWw7DIAyLxgE4ElfnSBwAKYud0O2nv5O1rZomWn4sP5KA+e0z7b/3zXvT4ukTi+7NfeMd3x92/3x6D3gC7+7ua+w+Y4E1PsrhDAITYfPZFtZJryRO8NnggSGOcwOhG3QXxUl/AlvlSNWfmfd9/UTz/ipSm3Jfr3L+pDlDcbBqIwuUIM4WSV8WYff4j7oEqCaJ0xB5G0Yy2ZhU+TzYnOo3SX9mzQwmwafToop1CYMHWHVv9KeJ+pM9iM3ICXJX8ZfDGRwyPjXUkUxFf2aIAmEEKilV5ZPwqHt7k16wLuXIZBS9ar5q3hmlKe1PaG0ckzgkp1FF5yV2IivFNftmzp+nOl3Tneh5c3cG6oCUPR+xaWb91Mx74YQnj/TC581ZXT6dsHTvQ9g3Lbun6PxZ90slPQIl2Y/+94O/t/cEq8Cg5/RZpdIAAAAASUVORK5CYII=";
 
 const COMPANIES = {
@@ -572,15 +611,15 @@ function tabKostnader(){
   }
   html+=`<div class="card"><div class="row wrap" style="justify-content:space-between;align-items:center"><div><h3>Alla kostnadsposter (${items.length})</h3><div class="muted small">Bocka av i "Tänk om"-kolumnen för att simulera utan att radera.</div></div>
     <button class="btn primary sm" onclick="openItemDialog()">＋ Ny post</button></div>
-    <div style="overflow-x:auto;margin-top:12px"><table><thead><tr><th>Tänk om</th><th>Post</th><th class="num">Kr/mån</th><th class="num">Kr/år</th><th class="num">Andel</th><th></th></tr></thead><tbody>`;
+    <div style="overflow-x:auto;margin-top:12px"><table><thead><tr><th>Tänk om</th><th>Post</th><th class="num">Kr/mån</th><th class="num hide-sm">Kr/år</th><th class="num hide-sm">Andel</th><th></th></tr></thead><tbody>`;
   const sorted=items.slice().sort((a,b)=>monthlyAmount(b)-monthlyAmount(a));
   html+=sorted.map(i=>{ const m=monthlyAmount(i), off=sim.has(i.id);
     return `<tr style="${off?"opacity:.45":""}">
       <td><input type="checkbox" style="width:auto" ${off?"":"checked"} onchange="toggleSim('${i.id}')"></td>
       <td><b>${esc(i.name)}</b> <span class="pill">${esc(i.category)}</span> <span class="muted small">${esc(i.interval)}</span>${i.note?`<br><span class="muted small">${esc(i.note)}</span>`:""}${i.transactions&&i.transactions.length?`<br><span class="tag" style="background:oklch(0.3 0.02 260);color:var(--muted)">${i.transactions.length} transaktioner</span>`:""}</td>
       <td class="num tabular">${fmtSEK(m)}</td>
-      <td class="num tabular muted">${fmtSEK(m*12)}</td>
-      <td class="num tabular muted">${Math.round(m/(total||1)*100)}%</td>
+      <td class="num tabular muted hide-sm">${fmtSEK(m*12)}</td>
+      <td class="num tabular muted hide-sm">${Math.round(m/(total||1)*100)}%</td>
       <td class="num" style="white-space:nowrap">
         ${i.transactions&&i.transactions.length?`<button class="btn sm ghost icon" title="Detaljer" onclick="openTx('${i.id}')">${icon("list")}</button>`:""}
         <button class="btn sm icon" title="Sänk" style="border-color:var(--success);color:var(--success)" onclick="openReduce('${i.id}')">${icon("scissors")}</button>
@@ -606,12 +645,12 @@ function tabTeam(){
   const rows=people.sort((a,b)=>b.amount-a.amount).map(p=>{ const c=classifyPerson(p.name);
     if(c.risk==="hög") hi+=p.amount; else if(c.risk==="medel") med+=p.amount;
     const col={"hög":"var(--danger)","medel":"var(--warning)","låg":"var(--success)"}[c.risk];
-    return `<tr><td><b>${esc(p.name)}</b></td><td>${esc(c.role)}</td><td class="muted small">${esc(c.tools)}</td>
+    return `<tr><td><b>${esc(p.name)}</b></td><td>${esc(c.role)}</td><td class="muted small hide-sm">${esc(c.tools)}</td>
       <td><span class="tag" style="background:${col};color:#08160c">${c.risk} risk</span></td><td class="num tabular">${fmtSEK(p.amount)}</td></tr>`;
   }).join("");
   const potential=hi*0.7+med*0.4;
   return `<div class="card"><div class="row wrap" style="justify-content:space-between;align-items:center"><div><h3>Team & AI-potential</h3><div class="muted small">${people.length} personer · potentiell besparing med AI-verktyg <b style="color:var(--success)">≈ ${fmtSEK(potential)}/mån</b></div></div></div>
-    <div style="overflow-x:auto;margin-top:12px"><table><thead><tr><th>Person</th><th>Roll</th><th>AI-verktyg</th><th>Cut-risk</th><th class="num">Kr/mån</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div style="overflow-x:auto;margin-top:12px"><table><thead><tr><th>Person</th><th>Roll</th><th class="hide-sm">AI-verktyg</th><th>Cut-risk</th><th class="num">Kr/mån</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="muted small" style="margin-top:10px">Potential = hög-risk × 0,7 + medel-risk × 0,4. Vägledande – inte ett beslut.</div></div>`;
 }
 
